@@ -18,6 +18,7 @@ const {
   shuffleArray,
   getRandomInt,
   getRandomItemFrom,
+  checkNumber,
 } = require(`../../utils`);
 
 /* Выглядит ужасно, но не придумал как лучше
@@ -52,11 +53,12 @@ const generatePublications = (count) => (
 module.exports = {
   name: `--generate`,
   run(count) {
-    if (count > MAX_PUBLICATION_AMOUNT) {
+    const countPublications = checkNumber(count, DEFAULT_COUNT);
+
+    if (countPublications > MAX_PUBLICATION_AMOUNT) {
       return console.log(`Не больше 1000 публикаций`);
     }
 
-    const countPublications = Number.parseInt(count, 10) || DEFAULT_COUNT;
     const content = JSON.stringify(generatePublications(countPublications));
 
     fs.writeFile(FILE_NAME, content, (err) => {

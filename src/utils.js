@@ -22,8 +22,18 @@ const shuffleArray = (array) => {
   return shuffledArray;
 };
 
+const checkNumber = (number, defaultValue, base = 10) => {
+  const parsed = Number.parseInt(number, base);
+  if (isNaN(parsed)) {
+    return defaultValue;
+  }
+
+  return  parsed;
+};
+
 module.exports = {
   getRandomInt,
   shuffleArray,
   getRandomItemFrom,
+  checkNumber,
 };
