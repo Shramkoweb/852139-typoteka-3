@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 
 const {
@@ -53,7 +53,7 @@ const generatePublications = (count) => (
 
 module.exports = {
   name: `--generate`,
-  run(count) {
+  async run(count) {
     const countPublications = checkNumber(count, DEFAULT_COUNT);
 
     if (countPublications > MAX_PUBLICATION_AMOUNT) {
@@ -62,11 +62,12 @@ module.exports = {
 
     const content = JSON.stringify(generatePublications(countPublications));
 
-    fs.writeFile(FILE_NAME, content, (err) => {
-      if (err) {
-        console.error(chalk.red(`Can't write data to file...`))
-      }
+    try {
+      fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created.`))
-    });
+    } catch (error) {
+      console.log(error)
+      console.error(chalk.red(`Can't write data to file...`))
+    }
   }
 }
