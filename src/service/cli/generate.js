@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require(`fs`);
+const chalk = require(`chalk`);
 
 const {
   CATEGORIES,
@@ -56,17 +57,16 @@ module.exports = {
     const countPublications = checkNumber(count, DEFAULT_COUNT);
 
     if (countPublications > MAX_PUBLICATION_AMOUNT) {
-      return console.log(`Не больше 1000 публикаций`);
+      return console.log(chalk.red(`Не больше 1000 публикаций`));
     }
 
     const content = JSON.stringify(generatePublications(countPublications));
 
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
-        return console.error(`Can't write data to file...`);
+        console.error(chalk.red(`Can't write data to file...`))
       }
-
-      return console.info(`Operation success. File created.`);
+      console.info(chalk.green(`Operation success. File created.`))
     });
   }
 }
