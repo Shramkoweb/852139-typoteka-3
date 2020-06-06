@@ -3,10 +3,11 @@
 const fs = require(`fs`).promises;
 const chalk = require(`chalk`);
 
+const SENTENCES_FILE_PATH = `./data/sentences.txt`;
+const TITLES_FILE_PATH = `./data/titles.txt`;
+const CATEGORIES_FILE_PATH = `./data/categories.txt`;
+
 const {
-  CATEGORIES,
-  SENTENCES,
-  TITLES,
   MAX_MONTH_PAST,
   FILE_NAME,
   MAX_ANNOUNCE_LENGTH,
@@ -38,18 +39,30 @@ const getDateMinusMonth = (monthAmount) => {
 
 /*
 * Немного сложно вышло с генерацией announce & fullText
-* getRandomInt(MIN_TEXT_LENGTH, MAX_ANNOUNCE_LENGTH) & getRandomInt(0, SENTENCES.length)
+* getRandomInt(MIN_TEXT_LENGTH, MAX_ANNOUNCE_LENGTH) & getRandomInt(0, sentences.length)
 * сделал специально, дабы тут был разный размер контента */
 
-const generatePublications = (count) => (
+const generatePublications = (count, titles, sentences, categories) => (
   [...Array(count)].map(() => ({
-    title: getRandomItemFrom(TITLES),
+    title: getRandomItemFrom(titles),
     createdDate: getDateMinusMonth(getRandomInt(0, MAX_MONTH_PAST)),
-    announce: shuffleArray(SENTENCES).slice(0, getRandomInt(MIN_TEXT_LENGTH, MAX_ANNOUNCE_LENGTH)).join(` `),
-    fullText: shuffleArray(SENTENCES).slice(0, getRandomInt(MIN_TEXT_LENGTH, SENTENCES.length)).join(` `),
-    category: [getRandomItemFrom(CATEGORIES), getRandomItemFrom(CATEGORIES)],
+    announce: shuffleArray(sentences).slice(0, getRandomInt(MIN_TEXT_LENGTH, MAX_ANNOUNCE_LENGTH)).join(` `),
+    fullText: shuffleArray(sentences).slice(0, getRandomInt(MIN_TEXT_LENGTH, sentences.length)).join(` `),
+    category: [getRandomItemFrom(categories), getRandomItemFrom(categories)],
   }))
 );
+
+const readContent = async (filePath) => {
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    return content
+      .trim()
+      .split(`\n`);
+  } catch (error) {
+    console.error(chalk.red(error));
+    return [];
+  }
+};
 
 module.exports = {
   name: `--generate`,
@@ -60,7 +73,22 @@ module.exports = {
       return console.log(chalk.red(`Не больше 1000 публикаций`));
     }
 
-    const content = JSON.stringify(generatePublications(countPublications));
+    const titlesPromise = readContent(TITLES_FILE_PATH);
+    const sentencesPromise = readContent(SENTENCES_FILE_PATH);
+    const categoriesPromise = readContent(CATEGORIES_FILE_PATH);
+
+    const [
+      titles,
+      sentences,
+      categories,
+    ] = await Promise.all([
+      titlesPromise,
+      sentencesPromise,
+      categoriesPromise,
+    ]);
+
+
+    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories));
 
     try {
       fs.writeFile(FILE_NAME, content);
