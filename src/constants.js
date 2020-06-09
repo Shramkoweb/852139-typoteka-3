@@ -8,15 +8,25 @@ const MAX_PUBLICATION_AMOUNT = 1000;
 const DEFAULT_COMMAND = `--help`;
 const USER_ARGV_INDEX = 2;
 const FILE_NAME = `mocks.json`;
+const DEFAULT_PORT = 3000;
 
 const ExitCode = {
   ERROR: 1,
   SUCCESS: 0,
 };
 
+const HttpCode = {
+  OK: 200,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+  FORBIDDEN: 403,
+  UNAUTHORIZED: 401,
+};
+
 module.exports = {
   DEFAULT_COMMAND,
   MIN_TEXT_LENGTH,
+  DEFAULT_PORT,
   USER_ARGV_INDEX,
   DEFAULT_COUNT,
   MAX_ANNOUNCE_LENGTH,
@@ -24,4 +34,5 @@ module.exports = {
   MAX_MONTH_PAST,
   FILE_NAME,
   ExitCode,
+  HttpCode,
 };

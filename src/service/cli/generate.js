@@ -21,6 +21,8 @@ const {
   getRandomInt,
   getRandomItemFrom,
   checkNumber,
+  readContent,
+  splitString,
 } = require(`../../utils`);
 
 /* Выглядит ужасно, но не придумал как лучше
@@ -52,18 +54,6 @@ const generatePublications = (count, titles, sentences, categories) => (
   }))
 );
 
-const readContent = async (filePath) => {
-  try {
-    const content = await fs.readFile(filePath, 'utf-8');
-    return content
-      .trim()
-      .split(`\n`);
-  } catch (error) {
-    console.error(chalk.red(error));
-    return [];
-  }
-};
-
 module.exports = {
   name: `--generate`,
   async run(count) {
@@ -73,24 +63,24 @@ module.exports = {
       return console.log(chalk.red(`Не больше 1000 публикаций`));
     }
 
-    const titlesPromise = readContent(TITLES_FILE_PATH);
-    const sentencesPromise = readContent(SENTENCES_FILE_PATH);
-    const categoriesPromise = readContent(CATEGORIES_FILE_PATH);
-
-    const [
-      titles,
-      sentences,
-      categories,
-    ] = await Promise.all([
-      titlesPromise,
-      sentencesPromise,
-      categoriesPromise,
-    ]);
-
-
-    const content = JSON.stringify(generatePublications(countPublications, titles, sentences, categories));
-
     try {
+      const titlesPromise = readContent(TITLES_FILE_PATH);
+      const sentencesPromise = readContent(SENTENCES_FILE_PATH);
+      const categoriesPromise = readContent(CATEGORIES_FILE_PATH);
+
+      const [
+        titles,
+        sentences,
+        categories,
+      ] = await Promise.all([
+        titlesPromise,
+        sentencesPromise,
+        categoriesPromise,
+      ]);
+
+      const offers = generatePublications(countPublications, splitString(titles), splitString(sentences), splitString(categories));
+      const content = JSON.stringify(offers);
+
       fs.writeFile(FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created.`))
     } catch (error) {
