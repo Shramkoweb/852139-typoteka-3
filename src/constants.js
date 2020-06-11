@@ -8,7 +8,11 @@ const MAX_PUBLICATION_AMOUNT = 1000;
 const DEFAULT_COMMAND = `--help`;
 const USER_ARGV_INDEX = 2;
 const FILE_NAME = `mocks.json`;
-const DEFAULT_PORT = 3000;
+
+const DefaultPort = {
+  SERVICE: 3000,
+  FRONT: 8080,
+}
 
 const ExitCode = {
   ERROR: 1,
@@ -26,7 +30,6 @@ const HttpCode = {
 module.exports = {
   DEFAULT_COMMAND,
   MIN_TEXT_LENGTH,
-  DEFAULT_PORT,
   USER_ARGV_INDEX,
   DEFAULT_COUNT,
   MAX_ANNOUNCE_LENGTH,
@@ -35,4 +38,5 @@ module.exports = {
   FILE_NAME,
   ExitCode,
   HttpCode,
+  DefaultPort,
 };

@@ -5,7 +5,7 @@ const {
 } = require(`../../api/api.js`);
 
 const {
-  DEFAULT_PORT,
+  DefaultPort,
 } = require(`../../constants`);
 
 const {
@@ -16,7 +16,7 @@ const {
 module.exports = {
   name: `--server`,
   run(customPort) {
-    const port = checkNumber(customPort, DEFAULT_PORT);
+    const port = checkNumber(customPort, DefaultPort.SERVICE);
 
 
     initServer(port);
